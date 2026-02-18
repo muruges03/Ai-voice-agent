@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\AgentController;
 use App\Http\Controllers\Tenant\AuthController;
+use App\Http\Controllers\Tenant\VoiceController;
 use App\Http\Controllers\tenant\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -30,6 +31,8 @@ Route::middleware([
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     });
     Route::post('/webhook/call', [WebhookController::class, 'handleCall']);
+    Route::post('/voice/incoming', [VoiceController::class, 'handleIncoming']);
+    Route::post('/voice/status', [VoiceController::class, 'callStatus']);
 
     Route::prefix('auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
@@ -38,5 +41,12 @@ Route::middleware([
 
     Route::middleware('auth:tenant')->group(function () {
         Route::apiResource('agents', AgentController::class);
+        Route::get('/analytics', function () {
+            return [
+                'total_calls' => \App\Models\Tenant\CallLog::count(),
+                'total_minutes' => \App\Models\Tenant\CallLog::sum('duration'),
+                'total_cost' => \App\Models\Tenant\CallLog::sum('cost'),
+            ];
+        });
     });
 });

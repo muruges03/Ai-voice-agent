@@ -7,6 +7,7 @@ use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -22,9 +23,11 @@ class RegisterController extends Controller
                 'password' => 'required|min:6'
             ]);
 
+            $slug = Str::slug($request->domain);
+
             // Create Tenant
             $tenant = Tenant::create([
-                'id' => uniqid(),
+                'id' => $slug,
             ]);
 
             // Create Domain

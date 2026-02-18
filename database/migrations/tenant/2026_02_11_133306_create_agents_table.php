@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('phone_number')->nullable()->unique();
             $table->string('voice_provider')->default('openai'); // openai/twilio/elevenlabs
             $table->string('voice_model')->nullable();
             $table->text('system_prompt')->nullable();
