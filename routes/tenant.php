@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Tenant\AgentController;
 use App\Http\Controllers\Tenant\AuthController;
+use App\Http\Controllers\tenant\WebhookController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -27,9 +29,14 @@ Route::middleware([
     Route::get('/', function () {
         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
     });
+    Route::post('/webhook/call', [WebhookController::class, 'handleCall']);
 
     Route::prefix('auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
         Route::post('/login', [AuthController::class, 'login']);
+    });
+
+    Route::middleware('auth:tenant')->group(function () {
+        Route::apiResource('agents', AgentController::class);
     });
 });

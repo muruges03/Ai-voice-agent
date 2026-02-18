@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('voice_provider')->default('openai'); // openai/twilio/elevenlabs
+            $table->string('voice_model')->nullable();
+            $table->text('system_prompt')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
         });
     }
