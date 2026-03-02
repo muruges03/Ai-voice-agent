@@ -19,6 +19,7 @@ class CreateTenantsTable extends Migration
             $table->string('id')->primary();
             $table->integer('monthly_minutes')->default(100);
             $table->integer('used_minutes')->default(0);
+            $table->foreignId('plan_id')->nullable();
             // your custom columns may go here
             $table->timestamps();
             $table->json('data')->nullable();

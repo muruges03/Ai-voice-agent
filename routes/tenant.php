@@ -39,7 +39,8 @@ Route::middleware([
         Route::post('/login', [AuthController::class, 'login']);
     });
 
-    Route::middleware('auth:tenant')->group(function () {
+    Route::middleware(['auth:sanctum', 'tenant', 'plan'])->group(function () {
+        Route::apiResource('agents', AgentController::class);
         Route::apiResource('agents', AgentController::class);
         Route::get('/analytics', function () {
             return [
